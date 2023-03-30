@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 from enum import Enum
+from typing import Union
 """
 Author: Eurka
 Version: 0.2.0
@@ -137,7 +138,9 @@ def plt_plot_line(x1y1: tuple[float, float],
     plt.plot(x_arr, y_arr, c=color, ls=style)
 
 
-def plt_plot_line_vertical(x: float, color="black", style="--"):
+def plt_plot_line_vertical(x: Union[float, list[float]],
+                           color="black",
+                           style="--"):
     """plt_plot_line_vertical 在 pyplot.plot 中快速绘制垂直辅助线
 
     Tips:
@@ -149,7 +152,11 @@ def plt_plot_line_vertical(x: float, color="black", style="--"):
         style (str, optional): 辅助线样式. Defaults to "--".
     """
     y_arr = plt.ylim()
-    plt.plot([x] * 2, y_arr, c=color, ls=style)
+    if isinstance(x, list):
+        for xi in x:
+            plt.plot([xi] * 2, y_arr, c=color, ls=style)
+    else:
+        plt.plot([x] * 2, y_arr, c=color, ls=style)
     # 避免y轴方向坐标轴扩展
     plt.ylim(y_arr)
 
@@ -166,7 +173,11 @@ def plt_plot_line_horizontal(y: float, color="black", style="--"):
         style (str, optional): 辅助线样式. Defaults to "--".
     """
     x_arr = plt.xlim()
-    plt.plot(x_arr, [y] * 2, c=color, ls=style)
+    if isinstance(y, list):
+        for yi in y:
+            plt.plot(x_arr, [yi] * 2, c=color, ls=style)
+    else:
+        plt.plot(x_arr, [y] * 2, c=color, ls=style)
     # 避免x轴方向坐标轴扩展
     plt.xlim(x_arr)
 
@@ -181,5 +192,7 @@ if __name__ == "__main__":
     y5 = [2, 2, 3, 4, 5]
     for i in range(5):
         plt.plot(x, eval(f"y{i+1}"), label=f"line {i+1}")
+    plt_plot_line_vertical(2)
+    plt_plot_line_horizontal([3, 5, 7])
     plt.legend()
     plt.show()
