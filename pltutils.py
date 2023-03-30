@@ -147,7 +147,7 @@ def plt_plot_line_vertical(x: Union[float, list[float]],
         必须在 plot 之后调用
         
     Args:
-        x (float): 辅助线位置
+        x (float, list[float]): 辅助线位置
         color (str, optional): 辅助线颜色. Defaults to "black".
         style (str, optional): 辅助线样式. Defaults to "--".
     """
@@ -168,7 +168,7 @@ def plt_plot_line_horizontal(y: float, color="black", style="--"):
         必须在 plot 之后调用
         
     Args:
-        y (float): 辅助线位置
+        y ((float, list[float])): 辅助线位置
         color (str, optional): 辅助线颜色. Defaults to "black".
         style (str, optional): 辅助线样式. Defaults to "--".
     """
