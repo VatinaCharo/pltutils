@@ -1,6 +1,5 @@
 from matplotlib import pyplot as plt
 from enum import Enum
-from typing import Union
 """
 Author: Eurka
 Version: 0.2.0
@@ -55,16 +54,26 @@ def plt_style_init(style=Style.SETE):
 
 
 def post2d(ans: str,
-           vars: Union[str, tuple[str, str]],
+           vars: str | tuple[str, str],
            params: dict = None,
            hasLabel=True):
-    """ 辅助生成标准格式的 pyplot 2d绘图标注，支持Latex数学表达式
+    """辅助生成标准格式的 pyplot 2d绘图标注，支持Latex数学表达式
 
-    Args:
-        ans (str): 函数值
-        vars (list[str]): 变量
-        params (dict, optional): 函数参数. Defaults to None.
-        hasLabel (bool, optional): 是否绘制图例. Defaults to True.
+    Parameters
+    ----------
+    ans : str
+        函数值名称
+    vars : str | tuple[str, str]
+        变量名称
+    params : dict, optional
+        参数名称, by default None
+    hasLabel : bool, optional
+        是否绘制图例, by default True
+    
+    e.g.
+    ----------
+    post2d("y_i", ["x", r"y_{idx}"], {"idx": "1,2,3,4,5"})
+        y_i vs (x, y_idx) when idx=1,2,3,4,5
     """
     if isinstance(vars, str):
         title = f"${ans}$ vs ${vars}$"
@@ -86,32 +95,39 @@ def line(x1y1: tuple[float, float],
          x2y2: tuple[float, float],
          color="black",
          style="--"):
-    """在 pyplot.plot 中快速绘制辅助线
-    
-    Tips:
-        建议在 plot 之后调用
+    """在 pyplot.plot 中绘制辅助线
 
-    Args:
-        x1y1 (tuple[float, float]): 起始点1
-        x2y2 (tuple[float, float]): 起始点2
-        color (str, optional): 辅助线颜色. Defaults to "black".
-        style (str, optional): 辅助线样式. Defaults to "--".
+    Parameters
+    ----------
+    x1y1 : tuple[float, float]
+        起点
+    x2y2 : tuple[float, float]
+        终点
+    color : str, optional
+        辅助线颜色, by default "black"
+    style : str, optional
+        辅助线样式, by default "--"
     """
     x_arr = [x1y1[0], x2y2[0]]
     y_arr = [x1y1[-1], x2y2[-1]]
     plt.plot(x_arr, y_arr, c=color, ls=style)
 
 
-def line_vertical(x: Union[float, list[float]], color="black", style="--"):
-    """在 pyplot.plot 中快速绘制垂直辅助线
+def line_vertical(x: float | list[float], color="black", style="--"):
+    """在 pyplot.plot 中绘制垂直辅助线
+    
+    Notice
+    ----------
+    必须在 plot 之后调用
 
-    Tips:
-        必须在 plot 之后调用
-        
-    Args:
-        x (float, list[float]): 辅助线位置
-        color (str, optional): 辅助线颜色. Defaults to "black".
-        style (str, optional): 辅助线样式. Defaults to "--".
+    Parameters
+    ----------
+    x : float | list[float]
+        辅助线位置
+    color : str, optional
+        辅助线颜色, by default "black"
+    style : str, optional
+        辅助线样式, by default "--"
     """
     y_arr = plt.ylim()
     if isinstance(x, list):
@@ -123,16 +139,21 @@ def line_vertical(x: Union[float, list[float]], color="black", style="--"):
     plt.ylim(y_arr)
 
 
-def line_horizontal(y: float, color="black", style="--"):
-    """在 pyplot.plot 中快速绘制水平辅助线
-
-    Tips:
-        必须在 plot 之后调用
-        
-    Args:
-        y ((float, list[float])): 辅助线位置
-        color (str, optional): 辅助线颜色. Defaults to "black".
-        style (str, optional): 辅助线样式. Defaults to "--".
+def line_horizontal(y: float | list[float], color="black", style="--"):
+    """在 pyplot.plot 中绘制水平辅助线
+    
+    Notice
+    ----------
+    必须在 plot 之后调用
+    
+    Parameters
+    ----------
+    y : float | list[float]
+        辅助线位置
+    color : str, optional
+        辅助线颜色, by default "black"
+    style : str, optional
+        辅助线样式, by default "--"
     """
     x_arr = plt.xlim()
     if isinstance(y, list):
@@ -151,12 +172,18 @@ def mark_point(xy: tuple[float, float],
                style="--"):
     """绘制标记点并做辅助线
 
-    Args:
-        xy (tuple[float, float]): 标记点
-        size (int, optional): 标记点大小. Defaults to 50.
-        pcolor (str, optional): 标记点颜色. Defaults to "black".
-        lcolor (str, optional): 辅助线颜色. Defaults to "black".
-        style (str, optional): 辅助线样式. Defaults to "--".
+    Parameters
+    ----------
+    xy : tuple[float, float]
+        标记点
+    size : int, optional
+        标记点大小, by default 50
+    pcolor : str, optional
+        标记点颜色, by default "black"
+    lcolor : str, optional
+        辅助线颜色, by default "black"
+    style : str, optional
+        辅助线样式, by default "--"
     """
     x_arr = plt.xlim()
     y_arr = plt.ylim()
