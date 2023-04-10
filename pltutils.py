@@ -5,6 +5,7 @@ from typing import Union
 Author: Eurka
 Version: 0.2.0
 ChangeLogs:
+    2023-04-10 v0.2.3 精简代码
     2023-03-30 v0.2.2 新增绘制标记点的功能
     2023-03-30 v0.2.1 支持一次绘制多条辅助线
     2023-03-21 v0.2.0 新增绘图配色方案加载
@@ -18,57 +19,6 @@ class Style(Enum):
     HUTAO = 2
     RAIDEN = 3
     N = 4
-
-
-def _var_list2str(vars: list, hasBraket=True) -> str:
-    """辅助生成标准格式的变量文本，支持 Latex 数学表达式
-
-    Args:
-        vars (list): 变量列表
-        hasBraket (bool, optional): 多变量是否加括号. Defaults to True.
-
-    Returns:
-        str: 标准格式的变量文本
-    """
-    if len(vars) == 1:
-        return vars[0]
-    if len(vars) > 1:
-        return "(~" + ",~".join(vars) + "~)" if hasBraket else ",~".join(vars)
-
-
-def _param_dict2str(params: dict) -> str:
-    """辅助生成标准格式的函数参数文本，支持 Latex 数学表达式
-
-    Args:
-        params (dict): 函数参数
-
-    Returns:
-        str: 标准格式的函数参数文本
-    """
-    return ",~".join([f"{k}={v}" for (k, v) in params.items()])
-
-
-def _build_plt_title(ans: str, vars: list[str], params: dict = None) -> str:
-    """辅助生成标准格式的 pyplot 绘图的标题文本，支持Latex数学表达式
-    
-    e.g.:
-        E vs x
-        
-        E vs x when k=0.1
-        
-        E vs (x, y) when k=0.1, g=0.98
-    Args:
-        ans (str): 函数值
-        vars (list[str]): 变量
-        params (dict, optional): 函数参数. Defaults to None.
-
-    Returns:
-        str: 绘图标题文本
-    """
-    var_str = _var_list2str(vars)
-    if params is None:
-        return f"${ans}$ vs ${var_str}$"
-    return f"${ans}$ vs ${var_str}$ when ${_param_dict2str(params)}$"
 
 
 def plt_style_init(style=Style.SETE):
@@ -104,8 +54,11 @@ def plt_style_init(style=Style.SETE):
     plt.rcParams["legend.loc"] = "upper right"
 
 
-def post(ans: str, vars: list[str], params: dict = None, hasLabel=True):
-    """辅助生成标准格式的 pyplot 绘图标注，支持Latex数学表达式
+def post2d(ans: str,
+           vars: Union[str, tuple[str, str]],
+           params: dict = None,
+           hasLabel=True):
+    """ 辅助生成标准格式的 pyplot 2d绘图标注，支持Latex数学表达式
 
     Args:
         ans (str): 函数值
@@ -113,9 +66,18 @@ def post(ans: str, vars: list[str], params: dict = None, hasLabel=True):
         params (dict, optional): 函数参数. Defaults to None.
         hasLabel (bool, optional): 是否绘制图例. Defaults to True.
     """
-    plt.title(_build_plt_title(ans, vars, params))
-    plt.xlabel(f"${_var_list2str(vars, False)}$")
-    plt.ylabel(f"${ans}$")
+    if isinstance(vars, str):
+        title = f"${ans}$ vs ${vars}$"
+        plt.xlabel(f"${vars}$")
+        plt.ylabel(f"${ans}$")
+    else:
+        title = f"${ans}$ vs (${vars[0]},~{vars[1]}$)"
+        plt.xlabel(f"${vars[0]}$")
+        plt.ylabel(f"${vars[1]}$")
+    if params is not None:
+        params_str = ",~".join([f"{k}={v}" for (k, v) in params.items()])
+        title += f" when ${params_str}$"
+    plt.title(title)
     if hasLabel:
         plt.legend()
 
@@ -215,5 +177,5 @@ if __name__ == "__main__":
     line_vertical(2)
     line_horizontal([3, 4, 7])
     mark_point([5, 5])
-    plt.legend()
+    post2d("y_i", ["x", r"y_{idx}"], {"idx": "1,2,3,4,5"})
     plt.show()
